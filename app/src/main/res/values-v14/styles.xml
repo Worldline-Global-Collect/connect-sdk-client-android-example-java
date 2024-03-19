@@ -1,0 +1,16 @@
+<!--
+  ~ Copyright (c) 2022 Worldline Global Collect B.V
+  -->
+
+<resources>
+
+    <!--
+        Base application theme for API 14+. This theme completely replaces
+        AppBaseTheme from BOTH res/values/styles.xml and
+        res/values-v11/styles.xml on API 14+ devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Holo.Light.NoActionBar">
+        <!-- API 14 theme customizations can go here. -->
+    </style>
+
+</resources>

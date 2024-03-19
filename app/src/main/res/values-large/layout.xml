@@ -1,0 +1,9 @@
+<!--
+  ~ Copyright (c) 2022 Worldline Global Collect B.V
+  -->
+
+<resources>
+    <item name="layout_bcmc" type="layout">@layout/layout_bcmc_tablet</item>
+    <item name="activity_render_payment_input" type="layout">@layout/activity_render_payment_input_large</item>
+</resources>
+

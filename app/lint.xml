@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="all">
+        <ignore path="src/main/res" />
+    </issue>
+    <issue id="DiscouragedApi">
+        <ignore path="src/main/java/com/worldline/connect/android/example/java/translation/Translator.java" />
+    </issue>
+    <issue id="AppCompatCustomView">
+        <ignore path="src/main/java/com/worldline/connect/android/example/java/view/ValidationEditText.java" />
+    </issue>
+</lint>
