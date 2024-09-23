@@ -9,4 +9,8 @@
     <issue id="AppCompatCustomView">
         <ignore path="src/main/java/com/worldline/connect/android/example/java/view/ValidationEditText.java" />
     </issue>
+    <!-- Dependency will be removed for ICON-38858, so its version can be ignored -->
+    <issue id="NewerVersionAvailable">
+        <ignore regexp="org.apache.commons:commons-lang3*"/>
+    </issue>
 </lint>
