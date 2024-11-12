@@ -49,14 +49,14 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'com.google.android.gms:play-services-wallet:19.3.0'
+    implementation 'com.google.android.gms:play-services-wallet:19.4.0'
     // The following dependency will be removed for ICON-38858, so its version can be ignored.
     //noinspection GradleDependency
     implementation 'org.apache.commons:commons-lang3:3.13.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
 
     //Worldline
     implementation "com.worldline-solutions.connect:connect-sdk-client-android:$connectSDK_version"

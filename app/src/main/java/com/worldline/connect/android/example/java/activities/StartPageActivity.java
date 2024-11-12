@@ -104,6 +104,11 @@ public class StartPageActivity extends Activity {
 
 
 		boolean isRecurring = ((CheckBox) findViewById(R.id.payment_is_recurring)).isChecked();
+
+		// Use this property to indicate whether the payment will be paid in instalments.
+		//	This will be taken into account when determining the availability of credit cards when making an IIN details call.
+		boolean isInstallments = ((CheckBox) findViewById(R.id.payment_is_in_installments)).isChecked();
+
 		boolean groupPaymentProducts = ((CheckBox) findViewById(R.id.group_paymentproducts)).isChecked();
 
 		ShoppingCart cart = new ShoppingCart();
@@ -114,7 +119,13 @@ public class StartPageActivity extends Activity {
 
 		// Create the PaymentContext object
 		AmountOfMoney amountOfMoney = new AmountOfMoney(cart.getTotalAmount(), currencyCode);
-		PaymentContext paymentContext = new PaymentContext(amountOfMoney, countryCode, isRecurring, Locale.US);
+		PaymentContext paymentContext = new PaymentContext(
+				amountOfMoney,
+				countryCode,
+				isRecurring,
+				Locale.US,
+				isInstallments
+		);
 
 		// and show the PaymentProductSelectionActivity
 		Intent paymentIntent = new Intent(this, PaymentProductSelectionActivity.class);
