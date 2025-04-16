@@ -3,7 +3,7 @@
  */
 
 plugins {
-    id 'com.android.application'
+    alias libs.plugins.android.application
 }
 
 android {
@@ -11,15 +11,15 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        compileSdk 34
-        targetSdkVersion 34
+        compileSdk 35
+        targetSdkVersion 35
         versionCode 1
         versionName "1.0"
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     buildTypes {
@@ -49,15 +49,15 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'com.google.android.gms:play-services-wallet:19.4.0'
+    implementation libs.appcompat
+    implementation libs.material
+    implementation libs.gson
+    implementation libs.play.services.wallet
     // The following dependency will be removed for ICON-38858, so its version can be ignored.
     //noinspection GradleDependency
-    implementation 'org.apache.commons:commons-lang3:3.13.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
+    implementation libs.commons.lang3
+    implementation libs.constraint.layout
 
     //Worldline
-    implementation "com.worldline-solutions.connect:connect-sdk-client-android:$connectSDK_version"
+    implementation libs.connect.sdk.client.android
 }

@@ -12,6 +12,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.Insets;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.worldline.connect.android.example.java.R;
 import com.worldline.connect.android.example.java.configuration.Constants;
@@ -61,6 +65,17 @@ public class DetailInputActivity extends ShoppingCartActivity {
         rendered = false;
 
         fieldView = new DetailInputViewImpl(this, R.id.detail_input_view_layout_fields_and_buttons);
+
+        OnApplyWindowInsetsListener onApplyWindowInsetsListener = new OnApplyWindowInsetsListener() {
+            @NonNull
+            @Override
+            public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
+                Insets inset = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime());
+                v.setPadding(inset.left, inset.top, inset.right, inset.bottom);
+                return WindowInsetsCompat.CONSUMED;
+            }
+        };
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.detail_input_view_layout), onApplyWindowInsetsListener);
 
         loadIntentData();
 

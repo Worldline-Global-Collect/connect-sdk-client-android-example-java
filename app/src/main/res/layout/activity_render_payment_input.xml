@@ -8,13 +8,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white"
-    android:id="@+id/detail_input_view_layout">
+    android:id="@+id/detail_input_view_layout"
+    android:paddingVertical="@dimen/view_horizontal_padding">
 
     <include layout="@layout/activity_header"
         android:layout_height="wrap_content"
         android:layout_width="match_parent" />
 
     <ScrollView
+        android:id="@+id/scroll_view_payment_product_input"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         tools:ignore="MergeRootFrame"

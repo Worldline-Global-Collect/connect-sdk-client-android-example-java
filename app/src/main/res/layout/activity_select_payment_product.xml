@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-	android:id="@+id/payment_product_selection_view_layout">
+	android:id="@+id/payment_product_selection_view_layout"
+	android:paddingVertical="@dimen/view_horizontal_padding">
 
 	<include layout="@layout/activity_header"
 		android:layout_height="wrap_content"

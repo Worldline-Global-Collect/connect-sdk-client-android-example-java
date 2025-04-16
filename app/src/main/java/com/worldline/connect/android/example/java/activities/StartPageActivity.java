@@ -10,8 +10,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
+
+import androidx.annotation.NonNull;
+import androidx.core.graphics.Insets;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.worldline.connect.android.example.java.BuildConfig;
 import com.worldline.connect.android.example.java.R;
@@ -55,6 +62,22 @@ public class StartPageActivity extends Activity {
 		countryCodeEditText = findViewById(R.id.country_code);
 		currencyCodeEditText = findViewById(R.id.currency_code);
 
+		OnApplyWindowInsetsListener onApplyWindowInsetsListener = new OnApplyWindowInsetsListener() {
+			@NonNull
+			@Override
+			public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
+				Insets inset = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.ime());
+				ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+				lp.leftMargin = inset.left;
+				lp.topMargin = inset.top;
+				lp.rightMargin = inset.right;
+				lp.bottomMargin = inset.bottom;
+				v.setLayoutParams(lp);
+				return WindowInsetsCompat.CONSUMED;
+			}
+		};
+		ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.scroll_view_startpage), onApplyWindowInsetsListener);
+
 		loadData();
 	}
 
@@ -70,10 +93,10 @@ public class StartPageActivity extends Activity {
 		}
 		String customerId = customerIdentifierEditText.getValue();
 
-		EditText merchantIdentifierEditText = ((EditText) findViewById(R.id.merchant_identifier));
+		EditText merchantIdentifierEditText = findViewById(R.id.merchant_identifier);
 		String merchantId = merchantIdentifierEditText.getText().toString();
 
-		EditText merchantNameText = ((EditText) findViewById(R.id.merchant_name));
+		EditText merchantNameText = findViewById(R.id.merchant_name);
 		String merchantName = merchantNameText.getText().toString();
 
 		if (!clientApiUrlEditText.isValid()) {
