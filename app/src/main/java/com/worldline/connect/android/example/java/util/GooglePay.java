@@ -134,7 +134,15 @@ public class GooglePay {
             // Insert transaction info (only for full payment requests)
             JSONObject transactionInfo = new JSONObject();
             transactionInfo.put("totalPriceStatus", "FINAL");
-            transactionInfo.put("totalPrice", paymentContext.getAmountOfMoney().getAmount().toString());
+
+            /*
+             IMPORTANT!
+             This code assumes that the payment will be processed in a currency that uses two decimal places.
+             Currencies that have a different amount of decimal places, like JPY or KRW, must not be used with this example code.
+            */
+            String totalPrice = String.valueOf((paymentContext.getAmountOfMoney().getAmount() / 100f));
+            transactionInfo.put("totalPrice", totalPrice);
+
             transactionInfo.put("currencyCode", paymentContext.getAmountOfMoney().getCurrencyCode());
             if (paymentProduct.getAcquirerCountry() != null) {
                 transactionInfo.put("countryCode", paymentProduct.getAcquirerCountry());

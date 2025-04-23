@@ -85,7 +85,7 @@ public class ProductSelectionViewImpl implements ProductSelectionView {
     @Override
     public void hideLoadingIndicator() {
         if (progressDialog.isShowing()) {
-            progressDialog.hide();
+            progressDialog.dismiss();
         }
     }
 
