@@ -5,7 +5,6 @@
 package com.worldline.connect.android.example.java.util;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.util.Log;
 
 import com.worldline.connect.android.example.java.activities.PaymentProductSelectionActivity;
@@ -13,7 +12,10 @@ import com.worldline.connect.sdk.client.android.constants.Constants;
 import com.worldline.connect.sdk.client.android.model.paymentcontext.PaymentContext;
 import com.worldline.connect.sdk.client.android.model.paymentproduct.PaymentProduct;
 import com.worldline.connect.sdk.client.android.model.paymentproduct.specificdata.PaymentProduct320SpecificData;
-import com.google.android.gms.wallet.AutoResolveHelper;
+import androidx.activity.result.ActivityResultLauncher;
+
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.wallet.PaymentData;
 import com.google.android.gms.wallet.PaymentDataRequest;
 import com.google.android.gms.wallet.PaymentsClient;
 import com.google.android.gms.wallet.Wallet;
@@ -32,7 +34,6 @@ import java.util.List;
  */
 public class GooglePay {
 
-    private static final int LOAD_PAYMENT_DATA_REQUEST_CODE = 42;
     private static final String TAG = GooglePay.class.getName();
 
     private final Activity activity;
@@ -70,9 +71,12 @@ public class GooglePay {
     /**
      * Set up a Google payments client, create a Google pay payment request and use them to bring up
      * the Google Pay payment sheet.
-     * Result handling occurs in the {@link PaymentProductSelectionActivity#onActivityResult(int, int, Intent)} method.
+     * Result handling occurs in the {@link PaymentProductSelectionActivity#handleGooglePayResult(com.google.android.gms.wallet.contract.ApiTaskResult)}
+     * method, using {@link com.google.android.gms.wallet.contract.TaskResultContracts.GetPaymentDataResult}.
      */
-    public void start(boolean isEnvironmentProduction) {
+    public void start(
+            boolean isEnvironmentProduction,
+            ActivityResultLauncher<Task<PaymentData>> paymentDataLauncher) {
 
         PaymentsClient mPaymentsClient =
                 Wallet.getPaymentsClient(
@@ -86,8 +90,9 @@ public class GooglePay {
         PaymentDataRequest request =
                 PaymentDataRequest.fromJson(paymentDataRequestJson.toString());
         if (request != null) {
-            AutoResolveHelper.resolveTask(
-                    mPaymentsClient.loadPaymentData(request), activity, LOAD_PAYMENT_DATA_REQUEST_CODE);
+            mPaymentsClient
+                    .loadPaymentData(request)
+                    .addOnCompleteListener(activity, paymentDataLauncher::launch);
         }
     }
 

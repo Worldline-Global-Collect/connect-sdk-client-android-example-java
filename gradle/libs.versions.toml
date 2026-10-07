@@ -1,19 +1,19 @@
 [versions]
-appcompat = "1.7.1"
-commonsLang3 = "3.13.0"
-connectSdkClientAndroid = "7.0.4"
-constraintLayout = "2.2.1"
-gradle = "8.12.3"
-gson = "2.13.2"
-material = "1.13.0"
-playServicesWallet = "19.4.0"
+appcompat = "1.8.0"
+commonsLang3 = "3.20.0"
+connectSdkClientAndroid = '8.0.0'
+constraintLayout = "2.2.2"
+androidGradlePlugin = "9.4.1"
+gson = "2.14.0"
+material = "1.14.0"
+playServicesWallet = "20.0.0"
 
 [libraries]
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang3" }
 connect-sdk-client-android = { module = "com.worldline-solutions.connect:connect-sdk-client-android", version.ref = "connectSdkClientAndroid" }
 constraint-layout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintLayout"}
-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 play-services-wallet = { module = "com.google.android.gms:play-services-wallet", version.ref = "playServicesWallet" }

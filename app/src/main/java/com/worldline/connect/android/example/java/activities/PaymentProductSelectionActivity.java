@@ -16,9 +16,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.google.android.gms.common.api.Status;
+import androidx.activity.result.ActivityResultLauncher;
+
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.tasks.Task;
 import com.google.android.gms.wallet.AutoResolveHelper;
 import com.google.android.gms.wallet.PaymentData;
+import com.google.android.gms.wallet.contract.ApiTaskResult;
+import com.google.android.gms.wallet.contract.TaskResultContracts.GetPaymentDataResult;
 import com.google.gson.Gson;
 import com.worldline.connect.android.example.java.R;
 import com.worldline.connect.android.example.java.configuration.CheckCommunication;
@@ -54,7 +59,8 @@ public class PaymentProductSelectionActivity extends ShoppingCartActivity implem
 
     private static final String TAG = PaymentProductSelectionActivity.class.getName();
 
-    private static final int LOAD_PAYMENT_DATA_REQUEST_CODE = 42;
+    private final ActivityResultLauncher<Task<PaymentData>> paymentDataLauncher =
+            registerForActivityResult(new GetPaymentDataResult(), this::handleGooglePayResult);
 
     // The view belonging to this activity
     private ProductSelectionView selectionView;
@@ -204,7 +210,7 @@ public class PaymentProductSelectionActivity extends ShoppingCartActivity implem
 
     private void startGooglePay(PaymentProduct paymentProduct) {
         GooglePay googlePay = new GooglePay(this, ConnectSDK.INSTANCE.getPaymentConfiguration().getPaymentContext(), paymentProduct, merchantId, merchantName);
-        googlePay.start(false);
+        googlePay.start(false, paymentDataLauncher);
         selectionView.hideLoadingIndicator();
     }
 
@@ -269,56 +275,54 @@ public class PaymentProductSelectionActivity extends ShoppingCartActivity implem
 
     // Handle the result returned by the Google Pay client. In case the payment is successful,
     // the payment result page is loaded.
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    private void handleGooglePayResult(ApiTaskResult<PaymentData> result) {
         selectionView.showLoadingIndicator();
-        // value passed in AutoResolveHelper
-        if (requestCode == LOAD_PAYMENT_DATA_REQUEST_CODE) {
-            switch (resultCode) {
-                case RESULT_OK:
-                    PaymentData paymentData = PaymentData.getFromIntent(data);
-
-                    String jsonString = paymentData.toJson();
-                    try {
-                        JSONObject jsonJSON = new JSONObject(jsonString);
-
-                        JSONObject paymentMethodData = jsonJSON.getJSONObject("paymentMethodData");
-                        JSONObject tokenizationData = paymentMethodData.getJSONObject("tokenizationData");
-                        String encryptedPaymentData = tokenizationData.getString("token");
-
-//                            String encryptedPaymentData = token;
-
-                        PaymentRequest paymentRequest = new PaymentRequest();
-                        paymentRequest.setPaymentProduct(paymentProduct);
-                        paymentRequest.setValue(GOOGLE_PAY_TOKEN_FIELD_ID, encryptedPaymentData);
-                        paymentRequest.validate();
-
-                        ConnectSDK.INSTANCE.encryptPaymentRequest(
-                                paymentRequest,
-                                this::encryptPaymentRequestSuccess,
-                                this::failure
-                        );
-                    } catch (Exception e) {
-                        Log.e(TAG, "Could not parse malformed JSON: \"" + jsonString + "\"");
-                    }
-
-                    break;
-                case RESULT_CANCELED:
-                    Log.i(TAG, "Google Pay payment was cancelled");
-                    selectionView.hideLoadingIndicator();
-                    break;
-                case AutoResolveHelper.RESULT_ERROR:
-                    Status status = AutoResolveHelper.getStatusFromIntent(data);
-                    Log.e(TAG, "Something went wrong whilst making a Google Pay payment; errorCode: " + status);
+        switch (result.getStatus().getStatusCode()) {
+            case CommonStatusCodes.SUCCESS:
+                PaymentData paymentData = result.getResult();
+                if (paymentData == null) {
                     selectionView.hideLoadingIndicator();
                     selectionView.showTechnicalErrorDialog(this);
+                    Log.e(TAG, "Google Pay returned success without payment data");
                     break;
-                default:
+                }
+
+                String jsonString = paymentData.toJson();
+                try {
+                    JSONObject jsonJSON = new JSONObject(jsonString);
+
+                    JSONObject paymentMethodData = jsonJSON.getJSONObject("paymentMethodData");
+                    JSONObject tokenizationData = paymentMethodData.getJSONObject("tokenizationData");
+                    String encryptedPaymentData = tokenizationData.getString("token");
+
+                    PaymentRequest paymentRequest = new PaymentRequest();
+                    paymentRequest.setPaymentProduct(paymentProduct);
+                    paymentRequest.setValue(GOOGLE_PAY_TOKEN_FIELD_ID, encryptedPaymentData);
+                    paymentRequest.validate();
+
+                    ConnectSDK.INSTANCE.encryptPaymentRequest(
+                            paymentRequest,
+                            this::encryptPaymentRequestSuccess,
+                            this::failure
+                    );
+                } catch (Exception e) {
+                    Log.e(TAG, "Could not parse malformed JSON: \"" + jsonString + "\"");
                     selectionView.hideLoadingIndicator();
-                    selectionView.showTechnicalErrorDialog(this);
-                    Log.e(TAG, "Something went wrong whilst making a Google Pay payment");
-            }
+                }
+                break;
+            case CommonStatusCodes.CANCELED:
+                Log.i(TAG, "Google Pay payment was cancelled");
+                selectionView.hideLoadingIndicator();
+                break;
+            case CommonStatusCodes.ERROR:
+                Log.e(TAG, "Something went wrong whilst making a Google Pay payment; errorCode: " + result.getStatus());
+                selectionView.hideLoadingIndicator();
+                selectionView.showTechnicalErrorDialog(this);
+                break;
+            default:
+                selectionView.hideLoadingIndicator();
+                selectionView.showTechnicalErrorDialog(this);
+                Log.e(TAG, "Something went wrong whilst making a Google Pay payment");
         }
     }
 
